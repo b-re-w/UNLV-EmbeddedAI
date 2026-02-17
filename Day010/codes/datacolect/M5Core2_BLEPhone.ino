@@ -26,7 +26,7 @@ void setup() {
     M5.begin(cfg);
 
     // Initialize BLE
-    BLEDevice::init("M5Core2_Quat_Mobile");
+    BLEDevice::init("M5Core2_Quat_Mobile10");
     BLEServer *pServer = BLEDevice::createServer();
     pServer->setCallbacks(new MyServerCallbacks());
     BLEService *pService = pServer->createService(SERVICE_UUID);
@@ -44,30 +44,30 @@ void setup() {
 void loop() {
     M5.update();
     unsigned long now = micros();
-    float dt = (now - lastUpdate) / 1000000.0f; [cite: 22]
+    float dt = (now - lastUpdate) / 1000000.0f; 
     lastUpdate = now;
 
     float ax, ay, az, gx, gy, gz;
-    M5.Imu.getAccel(&ax, &ay, &az); [cite: 23]
-    M5.Imu.getGyro(&gx, &gy, &gz); [cite: 24]
+    M5.Imu.getAccel(&ax, &ay, &az); 
+    M5.Imu.getGyro(&gx, &gy, &gz); 
 
-    // Manual Quaternion Math [cite: 26, 31, 33]
-    float gx_rad = gx * M_PI / 180.0f; [cite: 25]
+    // Manual Quaternion Math 
+    float gx_rad = gx * M_PI / 180.0f; 
     float gy_rad = gy * M_PI / 180.0f;
     float gz_rad = gz * M_PI / 180.0f;
 
-    float dqw = 0.5f * (-qx * gx_rad - qy * gy_rad - qz * gz_rad); [cite: 26]
-    float dqx = 0.5f * ( qw * gx_rad + qy * gz_rad - qz * gy_rad); [cite: 27]
-    float dqy = 0.5f * ( qw * gy_rad - qx * gz_rad + qz * gx_rad); [cite: 28]
-    float dqz = 0.5f * ( qw * gz_rad + qx * gy_rad - qy * gx_rad); [cite: 29]
+    float dqw = 0.5f * (-qx * gx_rad - qy * gy_rad - qz * gz_rad); 
+    float dqx = 0.5f * ( qw * gx_rad + qy * gz_rad - qz * gy_rad); 
+    float dqy = 0.5f * ( qw * gy_rad - qx * gz_rad + qz * gx_rad); 
+    float dqz = 0.5f * ( qw * gz_rad + qx * gy_rad - qy * gx_rad); 
 
-    qw += dqw * dt; [cite: 30]
+    qw += dqw * dt; 
     qx += dqx * dt;
     qy += dqy * dt;
     qz += dqz * dt;
 
-    float norm = sqrt(qw*qw + qx*qx + qy*qy + qz*qz); [cite: 31]
-    qw /= norm; qx /= norm; qy /= norm; qz /= norm; [cite: 32]
+    float norm = sqrt(qw*qw + qx*qx + qy*qy + qz*qz); 
+    qw /= norm; qx /= norm; qy /= norm; qz /= norm; 
 
     if (deviceConnected) {
         char buffer[64];
